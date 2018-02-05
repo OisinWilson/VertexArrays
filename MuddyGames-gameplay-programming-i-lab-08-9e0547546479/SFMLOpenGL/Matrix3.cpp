@@ -151,7 +151,7 @@ Matrix3 Matrix3::Rotation(int angle) const
 					0,0,1);
 }
 
-Matrix3 Matrix3::Translate(int dx, int dy)
+Matrix3 Matrix3::Translate(float dx, float dy)
 {
 	return Matrix3( 1,0,dx,
 					0,1,dy,

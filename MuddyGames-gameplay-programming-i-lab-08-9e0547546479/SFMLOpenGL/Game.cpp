@@ -1,20 +1,27 @@
 #include <Game.h>
 
+//@author Oisin Wilson
+//@login C00213826
+//@description: 
+// vertex array cube
+//@Known Bugs:
+// no known bugs
+
 bool flip = false;
 int current = 1;
 
-Game::Game() : window(VideoMode(800, 600), "OpenGL Cube")
+Game::Game() : window(VideoMode(800, 600), "OpenGL Vertex Array Cube")
 {
-	vertexPoints[0] = { 1.0f, 1.0f, 1.0f };
-	vertexPoints[1] = { -1.0f, 1.0f, 1.0f };
-	vertexPoints[2] = { -1.0f, -1.0f, 1.0f };
-	vertexPoints[3] = { 1.0f, -1.0f, 1.0f };
-	vertexPoints[4] = { 1.0f, 1.0f, -1.0f };
-	vertexPoints[5] = { -1.0f, 1.0f, -1.0f };
-	vertexPoints[6] = { -1.0f, -1.0f, -1.0f };
-	vertexPoints[7] = { 1.0f, -1.0f, -1.0f };
+	vertexPoints[0] = { 1.0f, 1.0f, -1.0f };
+	vertexPoints[1] = { -1.0f, 1.0f, -1.0f };
+	vertexPoints[2] = { -1.0f, -1.0f, -1.0f };
+	vertexPoints[3] = { 1.0f, -1.0f, -1.0f };
+	vertexPoints[4] = { 1.0f, 1.0f, -3.0f };
+	vertexPoints[5] = { -1.0f, 1.0f, -3.0f };
+	vertexPoints[6] = { -1.0f, -1.0f, -3.0f };
+	vertexPoints[7] = { 1.0f, -1.0f, -3.0f };
 
-	for (int i = 0; i < 8; i++)
+	for (auto i = 0; i < 8; i++)
 	{
 		vertices[i * 3] = vertexPoints[i].ReturnX();
 		vertices[i * 3 + 1 ] = vertexPoints[i].ReturnY();
@@ -23,8 +30,6 @@ Game::Game() : window(VideoMode(800, 600), "OpenGL Cube")
 }
 
 Game::~Game() {}
-
-
 
 void Game::run()
 {
@@ -66,53 +71,87 @@ void Game::update()
 	elapsed = clock.getElapsedTime();
 	cout << "Update up" << endl;
 
+	//find center
+	center = { vertexPoints[0] + vertexPoints[1] + vertexPoints[2] + vertexPoints[3] + vertexPoints[4] + vertexPoints[5] + vertexPoints[6] + vertexPoints[7] };
+	center = { center.ReturnX() / 8, center.ReturnY() / 8, center.ReturnZ() / 8 };
+
+	//translate
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		for (auto i = 0; i < 8; i++)
+		{
+			vertexPoints[i] = Matrix3::Translate(0.001f, 0) * vertexPoints[i];
+		}
+	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		for (int i = 0; i < 8; i++)
+		for (auto i = 0; i < 8; i++)
 		{
-			vertexPoints[i] = matrix.RotationX(0.1) * vertexPoints[i];
+			vertexPoints[i] = Matrix3::Translate(-0.001f, 0) * vertexPoints[i];
 		}
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		for (int i = 0; i < 8; i++)
+		for (auto i = 0; i < 8; i++)
 		{
-			vertexPoints[i] = matrix.RotationY(0.1) * vertexPoints[i];
+			vertexPoints[i] = Matrix3::Translate(0, 0.001f) * vertexPoints[i];
 		}
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		for (int i = 0; i < 8; i++)
+		for (auto i = 0; i < 8; i++)
 		{
-			vertexPoints[i] = matrix.RotationZ(0.1) * vertexPoints[i];
+			vertexPoints[i] = Matrix3::Translate(0, -0.001f) * vertexPoints[i];
 		}
-		
 	}
 
+	//rotation
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	{
+		for (auto i = 0; i < 8; i++)
+		{
+			vertexPoints[i] = (matrix.RotationX(0.1) * (vertexPoints[i] - center)) + center;
+		}
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 	{
-		for (int i = 0; i < 8; i++)
+		for (auto i = 0; i < 8; i++)
 		{
-			vertexPoints[i] = matrix.Scale3D(101) * vertexPoints[i];
+			vertexPoints[i] = (matrix.RotationY(0.1) * (vertexPoints[i] - center)) + center;
 		}
-
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 	{
-		for (int i = 0; i < 8; i++)
+		for (auto i = 0; i < 8; i++)
 		{
-			vertexPoints[i] = matrix.Scale3D(99) * vertexPoints[i];
+			vertexPoints[i] = (matrix.RotationZ(0.1) * (vertexPoints[i] - center)) + center;
+		}
+	}
+
+	//scaling
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		for (auto i = 0; i < 8; i++)
+		{
+			vertexPoints[i] = (matrix.Scale3D(101) * (vertexPoints[i] - center)) + center;
 		}
 
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+	{
+		for (auto i = 0; i < 8; i++)
+		{
+			vertexPoints[i] = (matrix.Scale3D(99) * (vertexPoints[i] - center)) + center;
+		}
+	}
 
 
-
-
-	for (int i = 0; i < 8; i++)
+	for (auto i = 0; i < 8; i++)
 	{
 		vertices[i * 3] = vertexPoints[i].ReturnX();
 		vertices[i * 3 + 1] = vertexPoints[i].ReturnY();
@@ -148,4 +187,3 @@ void Game::unload()
 {
 	cout << "Cleaning up" << endl;
 }
-

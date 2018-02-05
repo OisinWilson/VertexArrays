@@ -39,7 +39,7 @@ public:
 
 	Matrix3 Inverse() const;
 	Matrix3 Rotation(int angle) const;
-	static Matrix3 Translate(int dx, int dy);
+	static Matrix3 Translate(float dx, float dy);
 	Matrix3 Scale(int dx, int dy) const;
 
 	Matrix3 operator -() const;

@@ -7,6 +7,13 @@
 #include <Vector3.h>
 #include <Matrix3.h>
 
+//@author Oisin Wilson
+//@login C00213826
+//@description: 
+// vertex array cube
+//@Known Bugs:
+// no known bugs
+
 using namespace std;
 using namespace sf;
 //using namespace gpp;
@@ -45,4 +52,5 @@ private:
 	Vector3D vertexPoints[8];
 
 	Matrix3 matrix;
+	Vector3D center;
 };
